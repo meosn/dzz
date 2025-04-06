@@ -2,6 +2,13 @@ class Node:
     def __init__(self, value):
         self.value = value
         self.next = None
+
+def list_to_linked(listik):
+    new_list = LinkedList()
+    for val in listik:
+        new_list.add_last(val)
+        
+    return new_list
         
 def sorting(oo):
             n = 0
@@ -44,18 +51,18 @@ class Iterator():
     def __init__(self,listik):
         self.listik = listik
         self.current = listik.head
-        self.for_return = listik.head
         
     def __iter__(self):
         return self
-    
+        
     def __next__(self):
-        self.for_return = self.current
-        if self.for_return == None:
+        if self.current == None:
             raise StopIteration
         else:
+            
+            result = self.current.value
             self.current = self.current.next
-            return self.for_return.value
+            return result
 
         
 class LinkedList():
@@ -148,6 +155,11 @@ class LinkedList():
 
     def remove_value(self,value):
         current = self.head
+        if not current.next:
+            if current.value == value:
+                self.head = None
+                self.tail = None
+                
         while current.next:
             if current == self.head:
                 if current.value == value:
@@ -160,7 +172,6 @@ class LinkedList():
             else:
                 
                 if current.next.value == value:
-                    print("heheh")
                     current.next = None
             if current.next:
                 current = current.next
@@ -191,27 +202,76 @@ class LinkedList():
     # слияние отсортированных связных списков
     # возрат нового списка 
     # (нельзя использовать встроенную сортировку)
+    def __len__(self):
+        counter = 0
+        current = self.head
+        while current:
+            counter += 1
+            current = current.next
+        return counter
+            
+    def __getitem__(self,ind):
+        current = self.head
+        index = 0
+        while current:
+            if index == ind:
+                return current.value
+            index += 1
+            current = current.next
     @staticmethod
-    def merge(linked1, linked2):
+    def merge(linked1,linked2,i=0,j=0):
+        if i == len(linked1):
+            if j == len(linked2):
+                return
+            else:
+                for_return = []
+                for x in range(j,len(linked2)):
+                    for_return.append(linked2[x])
+                return for_return
+        else:
+            if j == len(linked2):
+                for_return = []
+                for x in range(i,len(linked1)):
+                    for_return.append(linked1[x])
+                return for_return
+            else:
+                if linked1[i] >= linked2[j]:
+                    if linked1.merge(linked1,linked2,i,j+1):
+                        return [linked2[j]]+linked1.merge(linked1,linked2,i,j+1)
+                    return [linked2[j]]
+                else:
+                    if linked1.merge(linked1,linked2,i+1,j):
+                        return [linked1[i]]+linked1.merge(linked1,linked2,i+1,j)
+                    return [linked1[i]]
+            
+    @staticmethod
+    def merge_for_return(linked1, linked2, i=0, j = 0):
+        new_list = linked1.merge(linked1,linked2)
+        return list_to_linked(new_list)
+                    
+                
+                
+            
+        # list1 = func(linked1)
+        # list2 = func(linked2)
+        # listik = list1 + list2
+        # listik = sorting(listik)
         
-        list1 = func(linked1)
-        list2 = func(linked2)
-        listik = list1 + list2
-        listik = sorting(listik)
-        
-        new_list = LinkedList()
-        for x in listik:
-            new_list.add_last(x)
+        # new_list = LinkedList()
+        # for x in listik:
+        #     new_list.add_last(x)
             
         return new_list
     
+    
     @staticmethod
     def compression(linked_list):
-        listik = func(linked_list)
         new_list = LinkedList()
-        for x in listik:
-            new_list.add_last(x)
-            
+        dubl = []
+        current = linked_list.head
+        while current:
+            if current.value in dubl:
+                pass
         return new_list.remove_dublicate()
         
         
@@ -223,26 +283,43 @@ class LinkedList():
     
 
 linked_list = LinkedList()
-linked_list.add_first(5)
-linked_list.add_last(4)
-linked_list.add_last(5)
+linked_list.add_first(2)
 linked_list.add_last(4)
 linked_list.add_last(6)
-linked_list.add_last(2)
-linked_list.add_last(6)
-linked_list.add_last(5)
+# linked_list.add_last(4)
+# linked_list.add_last(6)
+# linked_list.add_last(2)
+# linked_list.add_last(6)
+# linked_list.add_last(5)
 
 linked_list2 = LinkedList()
-linked_list2.add_first(1)
-linked_list2.add_last(8)
+linked_list2.add_first(2)
+linked_list2.add_last(3)
 linked_list2.add_last(5)
-linked_list2.add_last(4)
-linked_list2.add_last(0)
+linked_list2.add_last(6)
+# linked_list2.add_last(0)
 
 # iterator = Iterator(linked_list)
-iterator = iter(linked_list)
-for x in iterator:
-    print(x)
+# iterator = iter(linked_list)
+# for x in iterator:
+#     print(x)
+    
+# print("\n")
+# iterator2 = Iterator(linked_list2)
+# iterator2 = iter(linked_list2)
+# for x in iterator2:
+#     print(x)
+
+linked_list3 = (linked_list.merge_for_return(linked_list,linked_list2))
+linked_list3.print_linkedlist()
+print("\n")
+linked_list3.remove_dublicate()
+linked_list3.print_linkedlist()
+# linked_list.remove_value(5)
+
+# iterator = iter(linked_list)
+# for x in iterator:
+#     print(x)
 # lisk = linked_list.merge(linked_list2,linked_list)
 # listik = linked_list.compression(linked_list)
 # linked_list = linked_list.remove_dublicate()
