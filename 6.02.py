@@ -342,4 +342,4 @@ linked_list3.print_linkedlist()
 # linked_list = linked_list.remove_dublicate()
 # linked_list.remove_value(5)
 # linked_list.remove(0)
-# linked_list.print_linkedlist()
+# linked_list.print_linkedlist()®r
