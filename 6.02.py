@@ -1,3 +1,4 @@
+print("\033c")
 class Node:
     def __init__(self, value):
         self.value = value
@@ -218,6 +219,7 @@ class LinkedList():
                 return current.value
             index += 1
             current = current.next
+            
     @staticmethod
     def merge(linked1,linked2,i=0,j=0):
         if i == len(linked1):
@@ -267,12 +269,27 @@ class LinkedList():
     @staticmethod
     def compression(linked_list):
         new_list = LinkedList()
+
+        iterator = iter(linked_list)
+        for x in iterator:
+            new_list.add_last(x)
+            # print(x)
+            
+            
         dubl = []
         current = linked_list.head
-        while current:
+        index = 0
+        done = False
+        while current and not done:
+            if current.next == linked_list.head:
+                done = True
             if current.value in dubl:
-                pass
-        return new_list.remove_dublicate()
+                new_list.remove(index)
+            else:
+                dubl.append(current.value)
+            current = current.next
+            index += 1
+        return new_list 
         
         
             
@@ -313,7 +330,7 @@ linked_list2.add_last(6)
 linked_list3 = (linked_list.merge_for_return(linked_list,linked_list2))
 linked_list3.print_linkedlist()
 print("\n")
-linked_list3.remove_dublicate()
+linked_list3 = linked_list3.compression(linked_list3)
 linked_list3.print_linkedlist()
 # linked_list.remove_value(5)
 
