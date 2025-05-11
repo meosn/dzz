@@ -7,7 +7,7 @@ def create_Gen(history:"History"):
         if green:
             yield "\033[32m{}".format(str(current))
         else:
-            yield str(current)
+            yield "\033[37m{}".format(str(current))
         if current == history.current:
             green = False
         current = current.next
@@ -34,14 +34,24 @@ class History():
         
     def add_action(self,timestamp,username,action_type):
         new_node = Node(timestamp,len(self.actions_map),username,action_type)
-        self.actions_map[len(self.actions_map)] = new_node
-        if self.tail:
-            self.tail.next = new_node
-            new_node.prev = self.tail
-            self.tail = new_node
+        if self.current == self.tail:
+            self.current = new_node
+            self.actions_map[len(self.actions_map)] = new_node
+            if self.tail:
+                self.tail.next = new_node
+                new_node.prev = self.tail
+                self.tail = new_node
+            else:
+                self.tail = new_node
+                self.head = new_node
         else:
-            self.tail = new_node
-            self.head = new_node
+            self.current.next = new_node
+            new_node.prev = self.current
+            for k,val in self.actions_map.items():
+                if val == self.current:
+                    self.actions_map[k+1] = new_node
+            self.current = new_node
+            
         
     def undo(self):
         if self.current != self.head and self.current.prev:
@@ -106,6 +116,17 @@ history = History(None,{})
 history.add_action("03.05.2025 23:44:12","Petya","Brush")
 history.add_action("05.05.2025 23:44:12","Petya","Paint")
 history.add_action("03.05.2025 23:44:12","Petya","Layer")
+history.add_action("03.05.2025 23:44:12","Petya","Psdkf")
+history.current = history.current.prev
+history.add_action("03.05.2025 23:44:12","Petya","prororor")
+history.undo()
+history.undo()
+history.add_action("03.05.2025 23:44:12","Marsel","dkcve")
+# history.redo()
 # history.filter_and_remove("Layer")
 # print(history.tail)
 history.print()
+
+# 1. Undo, Redo - вылетает ошибка.
+# 2. Нет белой подсветки, когда текущий не совпадает с хвостом.
+# 3. Я вручную перевёл current, добавил действие. Новое действие оказалось в конце, а не после current, удалив всё остальное.
